@@ -9,7 +9,7 @@
 ```shell
 npm ci
 ```
-Установите playwright
+Установите playwright Version 1.50.1
 ```shell
 npx playwright install
 ```

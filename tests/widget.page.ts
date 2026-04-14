@@ -5,10 +5,11 @@ enum WidgetPageSelectors {
     WIDGET_BODY = '[class^=widgetWrapper] > [class^=widget__]',
     HEADER_TEXT = 'header h5',
     BUTTON_OPEN = '[data-test=openWidget]',
-    BUTTON_WRITE_TO_US = '[class^=btn]',
+    BUTTON_WRITE_TO_US = '[data-test="button_feedback_form"]', //изменил локатор
     ARTICLE_POPULAR_TITLE = '[class^=popularTitle__]',
-    ARTICLE_POPULAR_LIST = `${ARTICLE_POPULAR_TITLE} + ul[class^=articles__]`,
-    ARTICLE_POPULAR_LIST_ITEM = `${ARTICLE_POPULAR_LIST} > li`,
+    ARTICLE_POPULAR_LIST = '[class^=articles__]',
+    ARTICLE_POPULAR_LIST_ITEM = 'ul[class^=articles__] li', //изменил локатор
+	BUTTON_RETURN = '[data-test=button_back]', //добавил локатор
 }
 
 export class WidgetPage {
@@ -24,9 +25,13 @@ export class WidgetPage {
         return this.wrapper().locator(WidgetPage.selector.BUTTON_OPEN).click();
     }
 
-    async getPopularArticles() {
-        return this.wrapper().locator(WidgetPage.selector.ARTICLE_POPULAR_LIST_ITEM).all()
-    }
+	async getPopularArticles() {
+			const locator = this.wrapper().locator(WidgetPage.selector.ARTICLE_POPULAR_LIST_ITEM);
+			await locator.first().waitFor({ state: 'attached', timeout: 10000 }).catch(() => { //добавил ожидание
+				console.log('No popular articles found');
+			});
+			return locator.all();
+		}
 
     async clickWriteToUs() {
         return this.wrapper().locator(WidgetPage.selector.BUTTON_WRITE_TO_US).click();
@@ -35,8 +40,12 @@ export class WidgetPage {
     async getTitle() {
         return this.wrapper().locator(WidgetPage.selector.HEADER_TEXT).textContent();
     }
+	
+	async returnButton(){ //добавил метод
+		return this.wrapper().locator(WidgetPage.selector.BUTTON_RETURN).click();
+	}
 
-    getWidgetBody() {
+    getWidgetBody() { 
         return this.page.locator(WidgetPage.selector.WIDGET_BODY);
     }
 }

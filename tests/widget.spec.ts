@@ -31,4 +31,17 @@ test.describe('Uchi.ru widget ', () => {
 
     expect(await widgetPage.getTitle()).toEqual('Связь с поддержкой');
   });
+
+  test('return to articles list', async ({ page }) => { //Простой тест 
+    await widgetPage.openWidget();
+
+    const articles = await widgetPage.getPopularArticles();
+
+    await articles[0].click();
+	
+	await widgetPage.returnButton();
+
+    expect(await widgetPage.getTitle()).toEqual('База знаний Учи.ру');
+  });
+  
 });
